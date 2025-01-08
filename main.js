@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const path = require("node:path");
+const sqlite3 = require("sqlite3").verbose();
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -27,7 +28,20 @@ async function handleCallAPI() {
   return JSON.stringify(data);
 }
 
+function runMigration() {
+  const db = new sqlite3.Database("db/notes.db");
+
+  db.serialize(() => {
+    db.run(
+      "CREATE TABLE notes (id INTEGER PRIMARY KEY AUTOINCREMENT, title text, description text)"
+    );
+  });
+
+  db.close();
+}
+
 app.whenReady().then(() => {
+  runMigration();
   createWindow();
 
   app.on("activate", function () {
