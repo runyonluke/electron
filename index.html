@@ -4,6 +4,15 @@
     <title>Bootstrap Example</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com;
+        script-src 'self' https://ajax.googleapis.com https://maxcdn.bootstrapcdn.com;
+        font-src 'self' https://maxcdn.bootstrapcdn.com;
+      "
+    /> -->
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
@@ -42,10 +51,16 @@
                 </div>
                 <div class="form-group">
                   <label for="desc">Description</label>
-                  <textarea class="form-control"></textarea>
+                  <textarea class="form-control" id="description"></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button
+                  type="submit"
+                  class="btn btn-default"
+                  onclick="submitNotes()"
+                >
+                  Submit
+                </button>
               </form>
             </div>
             <div class="modal-footer">
@@ -168,5 +183,7 @@
         </div>
       </div>
     </div>
+    <script src="./renderer.js"></script>
+    <script src="./scripts/fetch-notes.js"></script>
   </body>
 </html>

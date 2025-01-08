@@ -9,23 +9,34 @@ function createWindow() {
     },
   });
 
-  ipcMain.on("set-title", (event, title) => {
-    const webContents = event.sender;
-    const win = BrowserWindow.fromWebContents(webContents);
-    win.setTitle(title);
+  ipcMain.on("fetch-notes", (event) => {
+    const db = new sqlite3.Database("db/notes.db");
+    db.all("SELECT * FROM notes", function (err, rows) {
+      // handle error
+
+      mainWindow.webContents.send("read-notes", rows);
+    });
+    db.close();
   });
-  ipcMain.handle("call-api", handleCallAPI);
+
+  ipcMain.on("create-note", (event, title, description) => {
+    console.log("test");
+    const db = new sqlite3.Database("db/notes.db");
+
+    db.serialize(() => {
+      db.exec(
+        "INSERT INTO notes (title, description) values('" +
+          title +
+          "', '" +
+          description +
+          "')"
+      );
+    });
+
+    db.close();
+  });
 
   mainWindow.loadFile("index.html");
-}
-
-async function handleCallAPI() {
-  const res = await fetch("https://dummyjson.com/products/1");
-  const data = await res.json();
-
-  console.log(data);
-
-  return JSON.stringify(data);
 }
 
 function runMigration() {
@@ -33,7 +44,7 @@ function runMigration() {
 
   db.serialize(() => {
     db.run(
-      "CREATE TABLE notes (id INTEGER PRIMARY KEY AUTOINCREMENT, title text, description text)"
+      "CREATE TABLE IF NOT EXISTS notes (id INTEGER PRIMARY KEY AUTOINCREMENT, title text, description text)"
     );
   });
 
