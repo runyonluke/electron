@@ -2,6 +2,10 @@ const { app, BrowserWindow, ipcMain } = require("electron/main");
 const path = require("node:path");
 const sqlite3 = require("sqlite3").verbose();
 
+const isPackaged = app.isPackaged;
+const appPath = isPackaged ? path.dirname(app.getAppPath()) : app.getAppPath();
+const dbFile = path.join(appPath, "db", "notes.db");
+
 function createWindow() {
   const mainWindow = new BrowserWindow({
     webPreferences: {
@@ -10,7 +14,7 @@ function createWindow() {
   });
 
   ipcMain.on("fetch-notes", (_event) => {
-    const db = new sqlite3.Database("db/notes.db");
+    const db = new sqlite3.Database(dbFile);
     db.all("SELECT * FROM notes", function (err, rows) {
       // handle error
 
@@ -20,7 +24,7 @@ function createWindow() {
   });
 
   ipcMain.on("create-note", (_event, title, description) => {
-    const db = new sqlite3.Database("db/notes.db");
+    const db = new sqlite3.Database(dbFile);
 
     db.serialize(() => {
       db.exec(
@@ -32,7 +36,7 @@ function createWindow() {
   });
 
   ipcMain.on("update-note", (_event, id, title, description) => {
-    const db = new sqlite3.Database("db/notes.db");
+    const db = new sqlite3.Database(dbFile);
 
     db.serialize(() => {
       db.exec(
@@ -44,7 +48,7 @@ function createWindow() {
   });
 
   ipcMain.on("delete-note", (_event, id) => {
-    const db = new sqlite3.Database("db/notes.db");
+    const db = new sqlite3.Database(dbFile);
 
     db.serialize(() => {
       db.exec(`DELETE FROM notes WHERE id="${id}"`);
@@ -57,7 +61,7 @@ function createWindow() {
 }
 
 function runMigration() {
-  const db = new sqlite3.Database("db/notes.db");
+  const db = new sqlite3.Database(dbFile);
 
   db.serialize(() => {
     db.run(
