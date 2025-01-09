@@ -54,6 +54,7 @@
                   <textarea class="form-control" id="description"></textarea>
                 </div>
 
+                <input type="hidden" id="note_id" />
                 <button
                   type="submit"
                   class="btn btn-default"
@@ -82,6 +83,7 @@
         class="btn btn-success"
         data-toggle="modal"
         data-target="#myModal"
+        onclick="openAddDialog()"
       >
         + Add Item
       </button>
@@ -93,5 +95,6 @@
     </div>
     <script src="./renderer.js"></script>
     <script src="./scripts/fetch-notes.js"></script>
+    <script src="./scripts/open-add-dialog.js"></script>
   </body>
 </html>

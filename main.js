@@ -20,16 +20,23 @@ function createWindow() {
   });
 
   ipcMain.on("create-note", (event, title, description) => {
-    console.log("test");
     const db = new sqlite3.Database("db/notes.db");
 
     db.serialize(() => {
       db.exec(
-        "INSERT INTO notes (title, description) values('" +
-          title +
-          "', '" +
-          description +
-          "')"
+        `INSERT INTO notes (title, description) values('${title}', '${description}')`
+      );
+    });
+
+    db.close();
+  });
+
+  ipcMain.on("update-note", (event, id, title, description) => {
+    const db = new sqlite3.Database("db/notes.db");
+
+    db.serialize(() => {
+      db.exec(
+        `UPDATE notes SET title='${title}',description='${description}' WHERE id="${id}"`
       );
     });
 
