@@ -2,6 +2,9 @@ const { app, BrowserWindow, ipcMain } = require("electron/main");
 const path = require("node:path");
 const sqlite3 = require("sqlite3").verbose();
 
+const { autoUpdater } = require("electron-updater");
+autoUpdater.checkForUpdatesAndNotify;
+
 const isPackaged = app.isPackaged;
 const appPath = isPackaged ? path.dirname(app.getAppPath()) : app.getAppPath();
 const dbFile = path.join(appPath, "db", "notes.db");
