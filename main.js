@@ -9,7 +9,7 @@ function createWindow() {
     },
   });
 
-  ipcMain.on("fetch-notes", (event) => {
+  ipcMain.on("fetch-notes", (_event) => {
     const db = new sqlite3.Database("db/notes.db");
     db.all("SELECT * FROM notes", function (err, rows) {
       // handle error
@@ -19,7 +19,7 @@ function createWindow() {
     db.close();
   });
 
-  ipcMain.on("create-note", (event, title, description) => {
+  ipcMain.on("create-note", (_event, title, description) => {
     const db = new sqlite3.Database("db/notes.db");
 
     db.serialize(() => {
@@ -31,13 +31,23 @@ function createWindow() {
     db.close();
   });
 
-  ipcMain.on("update-note", (event, id, title, description) => {
+  ipcMain.on("update-note", (_event, id, title, description) => {
     const db = new sqlite3.Database("db/notes.db");
 
     db.serialize(() => {
       db.exec(
         `UPDATE notes SET title='${title}',description='${description}' WHERE id="${id}"`
       );
+    });
+
+    db.close();
+  });
+
+  ipcMain.on("delete-note", (_event, id) => {
+    const db = new sqlite3.Database("db/notes.db");
+
+    db.serialize(() => {
+      db.exec(`DELETE FROM notes WHERE id="${id}"`);
     });
 
     db.close();

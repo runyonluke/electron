@@ -38,7 +38,7 @@ function returnNotesDropdown(element) {
       >
         <span class="glyphicon glyphicon-pencil"></span>
       </button>
-      <button type="button" class="btn btn-danger act-btns">
+      <button type="button" class="btn btn-danger act-btns" onclick="deleteNote(${element.id})">
         <span class="glyphicon glyphicon-trash"></span>
       </button>
     </div>
@@ -46,4 +46,9 @@ function returnNotesDropdown(element) {
       <div class="panel-body" id="description${element.id}">${element.description}</div>
     </div>
   </div>`;
+}
+
+function deleteNote(id) {
+  window.electronAPI.deleteNote(id);
+  $("#panel" + id).remove();
 }
